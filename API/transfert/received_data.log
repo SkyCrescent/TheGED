@@ -1,0 +1,13 @@
+$_FILES: Array
+(
+    [media] => Array
+        (
+            [name] => 2017-04-24_09-40-08.jpg
+            [full_path] => 2017-04-24_09-40-08.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\wamp64\tmp\phpD01E.tmp
+            [error] => 0
+            [size] => 17407
+        )
+
+)

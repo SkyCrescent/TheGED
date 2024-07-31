@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*@layer utilities{*/
+/*    nav ul li {*/
+/*        @apply relative pb-0*/
+/*    }*/
+/*    nav ul li:hover::before{*/
+/*        @apply w-[100%]*/
+/*    }*/
+/*    .active-h::before{*/
+/*        @apply w-[100%];*/
+/*    }*/
+/*    nav ul li::before {*/
+/*        @apply  content-[""] h-0.5  bg-red-500 bottom-0 duration-150 w-[0%] absolute*/
+/*    }*/
+
+
+
+
+/*}*/
