@@ -10,7 +10,7 @@ import R_Arrive from "@/components/Register/R_Arrive";
 import R_transmission from "@/components/Register/R_transmission";
 import R_Depart from "@/components/Register/R_Depart";
 import {usePathname} from "next/navigation";
-export default function NOTREGED({updateactuNotif,UpdateValueParafeure,TheUpdateValueParafeure,structure,UpdateValueTransmission,UpdateYourValueTransmission,updateValueInArrive,handleClickButton12,RefreshTransmissionInterne,updateRefreshTransmissionInterne,valueInTransmission,updateValueNotification,updateValueNotifications,valueCourrier,updateCourrier,updateValueInTransmission,handleClickButton10,MyPoste,Myid,handleClickButton4,handleClickButton5,handleClickButton6,handleClickButton8}){
+export default function NOTREGED({handleClickButton14,updateactuNotif,service,UpdateValueParafeure,TheUpdateValueParafeure,structure,UpdateValueTransmission,UpdateYourValueTransmission,updateValueInArrive,handleClickButton12,RefreshTransmissionInterne,updateRefreshTransmissionInterne,valueInTransmission,updateValueNotification,updateValueNotifications,valueCourrier,updateCourrier,updateValueInTransmission,handleClickButton10,MyPoste,Myid,handleClickButton4,handleClickButton5,handleClickButton6,handleClickButton8}){
 const [ etat, SetEtat ] = useState(1)
    const pathname = usePathname();
 
@@ -182,7 +182,7 @@ const [ etat, SetEtat ] = useState(1)
 
 
                <div className={etat === 2 ? 'block w-full h-full' : 'hidden'}>
-                  <R_Arrive updateactuNotif={updateactuNotif} structure={structure} RefreshTransmissionInterne={RefreshTransmissionInterne} updateRefreshTransmissionInterne={updateRefreshTransmissionInterne} valueInTransmission={valueInTransmission} valueCourrier={valueCourrier} updateCourrier={updateCourrier}  updateValueNotification={updateValueNotification} updateValueNotifications={updateValueNotifications} handleClickButton8={handleClickButton8} updateValueInTransmission={updateValueInTransmission} Myid={Myid} etat={etat} handleClickButton1={handleClickButton1} handleClickButton5={handleClickButton5} handleClickButton6={handleClickButton6} />
+                  <R_Arrive handleClickButton14={handleClickButton14} updateactuNotif={updateactuNotif} structure={structure} RefreshTransmissionInterne={RefreshTransmissionInterne} updateRefreshTransmissionInterne={updateRefreshTransmissionInterne} valueInTransmission={valueInTransmission} valueCourrier={valueCourrier} updateCourrier={updateCourrier}  updateValueNotification={updateValueNotification} updateValueNotifications={updateValueNotifications} handleClickButton8={handleClickButton8} updateValueInTransmission={updateValueInTransmission} Myid={Myid} etat={etat} handleClickButton1={handleClickButton1} handleClickButton5={handleClickButton5} handleClickButton6={handleClickButton6} />
                </div>
 
 
@@ -190,7 +190,7 @@ const [ etat, SetEtat ] = useState(1)
                   <R_Depart valueCourrier={valueCourrier} updateCourrier={updateCourrier} Myid={Myid} etat={etat} handleClickButton1={handleClickButton1} handleClickButton4={handleClickButton4}/>
                </div>
                <div className={etat === 4 ? 'block' : 'hidden'}>
-                  <R_transmission UpdateYourValueTransmission={UpdateYourValueTransmission} UpdateValueTransmission={UpdateValueTransmission} handleClickButton12={handleClickButton12} MyPoste={MyPoste} Myid={Myid} handleClickButton10={handleClickButton10} updateValueInArrive={updateValueInArrive} etat={etat} handleClickButton1={handleClickButton1} handleClickButton6={handleClickButton6}/>
+                  <R_transmission service={service} UpdateYourValueTransmission={UpdateYourValueTransmission} UpdateValueTransmission={UpdateValueTransmission} handleClickButton12={handleClickButton12} MyPoste={MyPoste} Myid={Myid} handleClickButton10={handleClickButton10} updateValueInArrive={updateValueInArrive} etat={etat} handleClickButton1={handleClickButton1} handleClickButton6={handleClickButton6}/>
                </div>
                <div className={etat === 5 ? 'block' : 'hidden'}>
                   <Parafeux UpdateValueParafeure={UpdateValueParafeure} TheUpdateValueParafeure={TheUpdateValueParafeure}  handleClickButton12={handleClickButton12} Myid={Myid} etat={etat} handleClickButton10={handleClickButton10} handleClickButton1={handleClickButton1} handleClickButton8={handleClickButton8} updateValueInArrive={updateValueInArrive}/>

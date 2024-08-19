@@ -17,7 +17,7 @@ import io from "socket.io-client";
 import refresh from "@/public/icons/refresh_127px.png";
 
 export default function Parafeux({Myid,handleClickButton12,handleClickButton1,UpdateValueParafeure,TheUpdateValueParafeure,updateValueInArrive}) {
-   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
    const [filteredData, setFilteredData] = useState([]); // Initialize with all data
    const [filteredData2, setFilteredData2] = useState([]); // Initialize with all data
    const [options , SetOptions] = useState(null)
@@ -202,9 +202,10 @@ export default function Parafeux({Myid,handleClickButton12,handleClickButton1,Up
                         onBlur={() => SetFocus(false)}
                         type='text'
                         name="nom"
-                        className="text-large relative w-[83%] mx-auto text-gray-700 bor bg-transparent  py-2 px-4 h-10 focus:outline-none focus:border-blue-500"
+                        className="text-large relative w-[83%] mx-auto  border-black/ text-gray-700 border bg-transparent  py-2 px-4 h-10 focus:outline-none focus:border-blue-500"
                         onChange={(e) => handleChange2(e)}
                         value={values.nom}
+
                      />
                      <img
                         className=" mx-3 h-5 w-5  absolute"

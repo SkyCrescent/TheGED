@@ -27,10 +27,11 @@ if (isset($_POST['objet'], $_POST['expediteur'] , $_POST['recepteur'] , $_POST['
     $transmission_interne = $_POST['transmission_interne'];
     $note = $_POST['note'];
     $accuse = 'non'; // Valeur ajoutée
+    $sous_structure='Secrétariat';
 
     //parafeux
-    $query = $con->prepare("INSERT INTO courier (objet ,expediteur,recepteur , date ,Type_transmission,id_structure,Niveau,parafeux,transmission_interne,note,accuse) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-    $query->bind_param("sssssisssss", $objet, $expediteur,$recepteur,$date ,$Type_transmission,$id_structure,$Niveau,$parafeux,$transmission_interne,$note,$accuse);
+    $query = $con->prepare("INSERT INTO courier (objet ,expediteur,recepteur , date ,Type_transmission,id_structure,Niveau,parafeux,transmission_interne,sous_structure,note,accuse) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+    $query->bind_param("sssssissssss", $objet, $expediteur,$recepteur,$date ,$Type_transmission,$id_structure,$Niveau,$parafeux,$transmission_interne,$sous_structure,$note,$accuse);
     if ($query->execute()) {
         $answer['error'] = false;
         $answer['message'] = "Insertion effectuée avec succès.";

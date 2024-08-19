@@ -19,7 +19,7 @@ import dowload2 from "@/public/icons/download_127px.png";
 import process from "process";
 import io from "socket.io-client";
 import refresh from "@/public/icons/refresh_127px.png";
-export default function R_transmission({UpdateYourValueTransmission,UpdateValueTransmission,updateValueInArrive,handleClickButton12,MyPoste,Myid,etat,handleClickButton1,handleClickButton10}) {
+export default function R_transmission({UpdateYourValueTransmission,service,UpdateValueTransmission,updateValueInArrive,handleClickButton12,MyPoste,Myid,etat,handleClickButton1,handleClickButton10}) {
    const [focus , SetFocus] = useState(false)
    const [focus6 , SetFocus6] = useState(false)
    const [filteredData, setFilteredData] = useState([]); // Initialize with all data
@@ -27,7 +27,7 @@ export default function R_transmission({UpdateYourValueTransmission,UpdateValueT
    const [selectedNote, setSelectedNote] = useState(null);
 
    const pathname = usePathname();
-   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
    const [loading , SetLoading ] = useState(false)
    const [options , SetOptions] = useState(null)
@@ -57,7 +57,7 @@ export default function R_transmission({UpdateYourValueTransmission,UpdateValueT
    const getData = async () => {
       try {
          // Recuperes les types de structure
-         const response = await axios.get(`http://localhost:8000/Courrier/get_allTranmissionInterne.php?recepteur=${Myid}&Type_transmission=depart-arrive`);
+         const response = await axios.get(`${baseUrl}/Courrier/get_allTranmissionInterne.php?recepteur=${Myid}&Type_transmission=depart-arrive&service=${service}`);
          // console.log(response.data && response.data.recu && response.data.recu.length > 0)
          if (response.data && response.data.recu && response.data.recu.length > 0) {
             // Vérifiez que la réponse contient les données attendues
@@ -89,7 +89,7 @@ export default function R_transmission({UpdateYourValueTransmission,UpdateValueT
       try {
          // Remplacez l'URL par la bonne URL de votre API
 
-         const response = await axios.get(`http://localhost:8000/doc_users/get_byId.ForSee.php?id_courier=${id}`)
+         const response = await axios.get(`${baseUrl}/doc_users/get_byId.ForSee.php?id_courier=${id}`)
          // console.log(response.data && response.data.recu && response.data.recu.length > 0)
          if (response.data && response.data.recu && response.data.recu.length > 0) {
             // Vérifiez que la réponse contient les données attendues
@@ -151,7 +151,7 @@ export default function R_transmission({UpdateYourValueTransmission,UpdateValueT
          setValues(newData);
          console.log(values);
 
-         let apiUrl = `http://localhost:8000/filter/Transmission.php?recepteur=${Myid}&Type_transmission=depart-arrive`;
+         let apiUrl = `${baseUrl}/filter/Transmission.php?recepteur=${Myid}&Type_transmission=depart-arrive`;
          if (name === 'nom' && cleanedValue) {
             apiUrl += `&objet=${cleanedValue}`;
          } else if (name === 'service' && cleanedValue) {

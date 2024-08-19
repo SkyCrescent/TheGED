@@ -9,7 +9,7 @@ import close from '@/public/icons/multiply.png'
 import deleyter from '@/public/icons/delete_127px.png'
 import process from "process";
 
-export default function CourrierDepart({structure,updateactuNotif,updateshowHeader,showHeader,SetSendCourier,id,updateCourrier,handleClickButton8,updateValueNotification,updateValueNotifications}){
+export default function NewCourrierArrive({SetEnterCourrier,  structure,updateactuNotif,updateshowHeader,showHeader,SetSendCourier,id,updateCourrier,handleClickButton8,updateValueNotification,updateValueNotifications}){
    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
    const [nouveau , Setnouveau] = useState("")
    const [loading , SetLoading ] = useState(false)
@@ -33,12 +33,12 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
       //le courier
       //les dates sont associes a la date systeme
       objet: "",
-      recepteur:[],
+      recepteur:id,
       niveau:"",
       parafeux:"non",
       //automatique
       // droit : "",
-      expediteur:id,
+      expediteur:"",
       date:formattedDate,
       service:"",
       // date_recep :formattedDate,
@@ -47,16 +47,6 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
       note:""
    });
 
-   const [values2, setValues2] = useState({
-      contenu:"Vous avez reçu un Courrier provenant de la ",
-      expediteur: "",
-      destinataire:"",
-      dat:formattedDate,
-      Type_transmission:"Courrier-arrive",
-      poste:"Secrétaire",
-      lue : 'non'
-
-   });
 
    const getDate = () =>{
       const currentDate = new Date();
@@ -66,10 +56,10 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
          ...prevValues,
          date: formattedDate,
       }));
-      setValues2(prevValues => ({
-         ...prevValues,
-         dat: formattedDate,
-      }));
+      // setValues2(prevValues => ({
+      //    ...prevValues,
+      //    dat: formattedDate,
+      // }));
 
    }
 
@@ -102,50 +92,6 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
       getDate()
       console.log("la structure est",structure)
    },[])
-
-   const handleDownload = async (url_fichier, nom, extension, nom_fichier) => {
-
-      SetFileChoice(true);
-      console.log(nom);
-      console.log(url_fichier);
-      console.log(extension);
-      console.log(nom_fichier);
-      console.log(nouveau);
-
-      try {
-         // Loop through each receiver in values.recepteur
-         for (let i = 0; i < values.recepteur.length && i < 4; i++) {
-            const currentNouveau = nouveau + i; // Increment nouveau for each iteration
-
-            console.log(`Processing receiver: ${values.recepteur[i]}`);
-            console.log(`Using id_courier: ${currentNouveau}`);
-
-            const formData = new FormData();
-            formData.append('nom', nom);
-            formData.append('url_fichier', url_fichier);
-            formData.append('extension', extension);
-            formData.append('nom_fichier', nom_fichier);
-            formData.append('id_courier', currentNouveau);
-
-            // Make the HTTP request using Axios
-            const response = await axios.post(`${baseUrl}/doc_users/add_Doc.php`, formData, {
-               headers: {
-                  'Content-Type': 'multipart/form-data',
-               },
-            });
-            console.log("Truc ajouté avec succès ", response);
-
-            const response2 = await axios.get(`${baseUrl}/doc_users/get_byIdCourrier.php?id_courier=${currentNouveau}`);
-            if (response2.data && response2.data.recu && response2.data.recu.length > 0) {
-               console.log(response2.data.recu);
-               setFilteredData2(response2.data.recu);
-               SetLoading(true);
-            }
-         }
-      } catch (error) {
-         console.error(error);
-      }
-   };
 
    const handleDownload2 = async (url_fichier, nom, extension, nom_fichier) => {
       SetFileChoice(true)
@@ -215,6 +161,7 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
 
    const handleChange = (e) => {
       const { name, value } = e.target;
+      console.log(e.target.name)
       let formattedValue = '';
       let cleanedValue = '';
       if (name === 'objet'  || name === 'note') {
@@ -238,6 +185,12 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
          // Supprimer les caractères spéciaux sauf les espaces et les tirets pour le nom de l'école
          // Mettre à jour l'état avec le nom de l'école nettoyé
          setValues({ ...values, [name]: cleanedValue });
+      }else if (name === 'expediteur') {
+         // Supprimer les caractères spéciaux sauf les espaces et les tirets pour le nom de l'école
+         // Mettre à jour l'état avec le nom de l'école nettoyé
+         cleanedValue = value.replace(/[^a-zA-Z0-9\séàâç&]/g, '');
+         setValues({ ...values, [name]: cleanedValue });
+         console.log(values)
       }
    };
 
@@ -247,13 +200,6 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
       console.log(id)
    },[])
 
-   function chunkArray(array, size) {
-      const chunkedArray = [];
-      for (let i = 0; i < array.length; i += size) {
-         chunkedArray.push(array.slice(i, i + size));
-      }
-      return chunkedArray;
-   }
 
    useEffect(() => {
       console.log("recteur",values);
@@ -277,39 +223,6 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
    };
 
 
-
-   // Utilisation de useEffect pour surveiller les changements dans selectedValues
-   useEffect(() => {
-      // Cette fonction sera appelée chaque fois que selectedValues change
-      console.log('Selected values updated:', selectedValues2);
-      // Met à jour le champ expediteur chaque fois que selectedValues2 change
-      setValues(prevValues => ({
-         ...prevValues,
-         recepteur: selectedValues2,
-      }));
-      console.log(values)
-   }, [selectedValues2]);
-
-
-//    const handleChange2 = (e) => {
-//       const options = e.target.options;
-//        selectedValues = [...values[e.target.name]]; // Copie des valeurs existantes
-// console.log(selectedValues)
-//       for (let i = 0; i < options.length; i++) {
-//          if (options[i].selected && !selectedValues.includes(options[i].value)) {
-//             selectedValues.push(options[i].value); // Ajoute la nouvelle valeur si elle n'est pas déjà présente
-//          }
-//       }
-//
-//       setValues({ ...values, [e.target.name]: selectedValues });
-//       console.log(values);
-//    };
-
-   const removeValue = (valueToRemove) => {
-      // Supprime la valeur spécifiée du tableau
-      setSelectedValues2(selectedValues2.filter(value => value !== valueToRemove));
-   };
-
    const deletData = async (nouveau) => {
 
       try {
@@ -321,7 +234,7 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
             },
          });
          SetLoading(false);
-         SetSendCourier(false);
+         SetEnterCourrier(false);
           console.log("Truc supprime avec succès ", response);
 
       } catch (error) {
@@ -357,9 +270,9 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
    };
 
    const handleSummit = async () => {
-      if (values.objet === "" && values.recepteur.length === 0 && values.niveau === "" && !FileChoice) {
+      if (values.objet === "" && values.expediteur === "" && values.niveau === "" &&values.note === "" && !FileChoice) {
          SetStatut(1);
-      } else if (values.recepteur.length === 0) {
+      } else if (values.expediteur === "") {
          SetStatut(2);
       } else if (values.niveau === "") {
          SetStatut(3);
@@ -367,63 +280,45 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
          SetStatut(4);
       } else if (values.objet === "") {
          SetStatut(5);
-      } else if (values.recepteur.includes(id.toString())) {
+      }else if (values.note === "") {
          SetStatut(6);
-      } else if (values.note === "") {
-         SetStatut(7);
       } else {
          try {
-            for (let recepteur of values.recepteur) {
-               const formData = new FormData();
-               formData.append('objet', values.objet);
-               formData.append('expediteur', values.expediteur);
-               formData.append('recepteur', recepteur); // Enregistre une seule valeur de 'recepteur' à la fois
-               formData.append('date', values.date);
-               formData.append('Type_transmission', values.type_trans);
-               formData.append('id_structure', id);
-               formData.append('Niveau', values.niveau);
-               formData.append('parafeux', values.parafeux);
-               formData.append('transmission_interne', values.transmission_interne);
-               formData.append('note', values.note);
+            // for (let recepteur of values.recepteur) {
+            //
+            // }
 
-               // Effectuez la requête HTTP en utilisant Axios
-               const response = await axios.post(`${baseUrl}/Courrier/add_Courier.php`, formData, {
-                  headers: {
-                     'Content-Type': 'multipart/form-data',
-                  },
-               });
-               console.log("Courrier ajouté avec succès ", response);
+            const formData = new FormData();
+            formData.append('objet', values.objet);
+            formData.append('expediteur', values.expediteur);
+            formData.append('recepteur', values.recepteur); // Enregistre une seule valeur de 'recepteur' à la fois
+            formData.append('date', values.date);
+            formData.append('Type_transmission', values.type_trans);
+            formData.append('id_structure', id);
+            formData.append('Niveau', values.niveau);
+            formData.append('parafeux', values.parafeux);
+            formData.append('transmission_interne', values.transmission_interne);
+            formData.append('note', values.note);
 
-               const formData2 = new FormData();
-               formData2.append('contenu', values2.contenu);
-               formData2.append('expediteur', values.expediteur);
-               formData2.append('destinataire', recepteur); // Enregistre une seule valeur de 'recepteur' à la fois
-               formData2.append('dat', values2.dat);
-               formData2.append('Type_transmission', values2.Type_transmission);
-               formData2.append('poste', values2.poste);
-               formData2.append('lue', values2.lue);
+            // Effectuez la requête HTTP en utilisant Axios
+            const response = await axios.post(`${baseUrl}/Courrier/add_Courier.php`, formData, {
+               headers: {
+                  'Content-Type': 'multipart/form-data',
+               },
+            });
+            console.log("Courrier ajouté avec succès ", response);
 
-               // Effectuez la requête HTTP en utilisant Axios
-               const response2 = await axios.post(`${baseUrl}/notification/add_notification.php`, formData2, {
-                  headers: {
-                     'Content-Type': 'multipart/form-data',
-                  },
-               });
-               console.log("Notification ajoutée avec succès ", response2);
-            }
 
-            updateshowHeader(true);
-
-            const newValue2 = 'SendCourrier';
+            const newValue2 = 'NewCourrier';
             updateValueNotification(newValue2);
             handleClickButton8();
-            const newValue3 = true;
-            updateValueNotifications(newValue3);
-            const newValue = 1;
-            updateCourrier(newValue);
-            updateactuNotif(structure);
+            // const newValue3 = true;
+            // updateValueNotifications(newValue3);
+            // const newValue = 1;
+            // updateCourrier(newValue);
+            // updateactuNotif(structure);
             SetStatut(8);
-            SetSendCourier(false);
+            SetEnterCourrier(false);
          } catch (error) {
             console.error(error);
          }
@@ -448,7 +343,7 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
          setValues(newData);
          console.log(values);
 
-         let apiUrl = `${baseUrl}/filter/Workspace.php?id_structure=${structure}`;
+         let apiUrl = `${baseUrl}/filter/Workspace.php?id_structure=${id}`;
          if (name === 'nom' && cleanedValue) {
             apiUrl += `&nom=${cleanedValue}`;
          } else if (name === 'service' && cleanedValue) {
@@ -482,7 +377,7 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
          <div
             className={`fixed top-0 left-0 z-30 bg-black/70 w-screen h-screen overflow-y-auto transition duration-300 ease-in-out`}
          >
-            <div className="w-full h-[90%] flex justify-center my-52 md:my-96 lg:my-6">
+            <div className="w-full h-[85%] flex justify-center my-52 md:my-96 lg:my-6">
                <div
                   className={ ` relative  flex flex-col items-center justify-center h-[100%] w-[90%] bg-white border border-gray-700 shadow rounded-lg p-2 ${loading ? 'scale-x-100 scale-y-100 opacity-100'  :'scale-x-0 scale-y-0 opacity-0' }  transition duration-500    ` }>
 
@@ -513,14 +408,9 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
                               {filteredData.map((item, index) => (
                                  <div key={item.id} className="relative w-[30%]  h-[30%]  content-container overflow-hidden  ">
                                     <div
-                                       className={
-                                       values.recepteur.length === 0 ? 'relative w-full h-full  cursor-not-allowed border border-gray-500 rounded-md hover:bg-gray-50 '
-                                                : 'relative w-full h-full  cursor-pointer border border-gray-500 rounded-md hover:bg-gray-50 '
-
-                                    }
+                                       className='relative w-full h-full  cursor-pointer border border-gray-500 rounded-md hover:bg-gray-50 '
                                        onClick={() => {
-                                          values.recepteur.length !== 0 ? handleDownload(item.url_fichier, item.nom, item.extension, item.nom_fichier)
-                                        : null
+                                          handleDownload2(item.url_fichier, item.nom, item.extension, item.nom_fichier)
                                        }}
                                     >
                                        <div className="relative w-[90%] mx-auto h-[60%] flex items-center justify-center">
@@ -586,15 +476,10 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
                               className="relative h-[110%] cursor-pointer mx-auto w-[100%] z-40"
                               onClick={() => {
                                  deletData(nouveau)
+                                // updateshowHeader(true);
+
                               }}
                            />
-
-
-                           <span className="absolute right-12 top-4"
-                                 onClick={() => {
-                                    updateshowHeader(!showHeader)
-                                 }}
-                           ></span>
                         </div>
                         <div className=" relative  h-[30%] w-[99%]  z-10 ">
 
@@ -616,8 +501,40 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
                                 </span>
                               </div>
 
+                              <div className="relative w-[35%] mt-32 -mx-8">
+                                 <button
+                                    className="w-full lg:w-[86%] mx-4 h-12 bg-indigo-600 hover:bg-indigo-950 text-white transition duration-300 transform hover:scale-105 px-10 py-2 rounded-md font-semibold"
+                                    onClick={() => {
+                                       handleSummit()
+                                    }}>Envoyer le Courrier
+                                 </button>
+                              </div>
 
-                              <div className="relative w-[25%] mx-10 mt-28">
+
+                           </div>
+
+                           <div className="h-[50%] w-[70%] flex  items-end  justify-between -mt-6">
+                              <div className="relative w-[68%]">
+                                 <input
+                                    onFocus={() => SetFocus3(true)}
+                                    onBlur={() => SetFocus3(false)}
+                                    type='text'
+                                    name="expediteur"
+                                    className="text-large relative w-[100%] text-gray-700 border rounded-lg bg-white/90 border-gray-300 py-2 px-4 h-12 focus:outline-none focus:border-blue-500"
+ //                                    onChange={handleChange}
+
+
+                                    onChange={(e) => handleChange(e)}
+
+                                    value={values.expediteur}
+                                 />
+                                 <span
+                                    className={(focus3 || values.expediteur) ? "absolute left-3 p-1 w-auto top-4 px-1 text-xs font-black text-blue-900 -translate-y-9 duration-300" : "absolute tracking-wide pointer-events-none duration-300 left-0 top-3 px-5 text-sky-700"}>
+                                  Expéditeur du courrier
+                                </span>
+                              </div>
+
+                              <div className="relative w-[48%] mx-20 ">
 
 
                                  <select
@@ -640,41 +557,7 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
                               </div>
 
 
-                           </div>
 
-                           <div className="h-[50%] flex items-center justify-between -mt-6">
-                              <div className="relative w-[45%]">
-                                 <select
-                                    onFocus={() => SetFocus3(true)}
-                                    onBlur={() => SetFocus3(false)}
-                                    name="recepteur"
-                                    className={"text-large relative w-[100%] text-gray-700 border rounded-lg bg-white/90 border-gray-300 py-2 px-4 h-12 focus:outline-none focus:border-blue-500"}
-                                   // onChange={(e) =>}
-                                    onChange={(e) => {
-                                       values.recepteur.length < 5 ?  handleChange2(e)
-                                          : SetStatut(10)
-                                    }}
-                                 >
-                                    <option value=""></option>
-                                    <option value='1'>La Direction Générale</option>
-                                    <option value='2'>La Direction Technique</option>
-                                    <option value='3'>La Direction Administrative et du Personnel</option>
-                                    <option value='4'>La Direction Financière et Comptable</option>
-                                    <option value='5'>La Direction Commerciale</option>
-                                 </select>
-                                 <span
-                                    className={(focus3 || values.recepteur) ? "absolute left-3 p-1 w-auto top-4 px-1 text-xs font-black text-blue-900 -translate-y-9 duration-300" : "absolute tracking-wide pointer-events-none duration-300 left-0 top-3 px-5 text-sky-700"}>
-                                  Destinataires du courrier
-                                </span>
-                              </div>
-                              <div className="relative w-[35%] mt-32 -mx-8">
-                                 <button
-                                    className="w-full lg:w-[86%] mx-4 h-12 bg-indigo-600 hover:bg-indigo-950 text-white transition duration-300 transform hover:scale-105 px-10 py-2 rounded-md font-semibold"
-                                    onClick={() => {
-                                       handleSummit()
-                                    }}>Envoyer le Courrier
-                                 </button>
-                              </div>
 
 
                            </div>
@@ -688,46 +571,46 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
 
                            <div className="relative w-[70%] ">
 
+                              {/*<div*/}
+                              {/*   className="flex flex-wrap mx-0 -top-7   content-normal gap-1 relative h-[15%] w-[91%]  rounded-md border border-gray-600   p-1   overflow-auto  ">*/}
+                              {/*   {selectedValues2.map((item, index) => (*/}
+                              {/*      <div key={index} className="relative w-[20%] md:w-[19%] h-12 ">*/}
+                              {/*         <div*/}
+                              {/*            className=" absolute z-20 right-0 top-1 h-[25%] w-[16%] items-center justify-center  ">*/}
+                              {/*            <img*/}
+                              {/*               src={deleyter.src}*/}
+                              {/*               alt="Image sélectionnée"*/}
+                              {/*               className="relative h-[100%] cursor-pointer mx-auto w-[100%] z-40"*/}
+                              {/*               onClick={() => removeValue(item)} // Appelle removeValue avec l'élément à supprimer*/}
+
+                              {/*            />*/}
+                              {/*         </div>*/}
+                              {/*         <div*/}
+                              {/*            className='relative w-full h-full  z-10 cursor-pointer  border border-gray-500 rounded-md hover:bg-gray-50'*/}
+                              {/*         >*/}
+                              {/*            <div className="relative w-full h-[70%]  flex items-center justify-center">*/}
+                              {/*               {item === '1' ? (*/}
+                              {/*                 <span>LA DG</span>*/}
+                              {/*               ) : item === '2' ? (*/}
+                              {/*                  <span>LA DT</span>*/}
+                              {/*               ) : item === '3' ? (*/}
+                              {/*                  <span>LA DAP</span>*/}
+                              {/*               ): item === '4' ? (*/}
+                              {/*                     <span>LA DFC</span>*/}
+                              {/*                  ) : (*/}
+                              {/*                  <span>LA DC</span>*/}
+                              {/*               )}*/}
+                              {/*            </div>*/}
+                              {/*         </div>*/}
+                              {/*      </div>*/}
+                              {/*   ))}*/}
+
+
+                              {/*</div>*/}
+
+
                               <div
-                                 className="flex flex-wrap mx-0 -top-7   content-normal gap-1 relative h-[15%] w-[91%]  rounded-md border border-gray-600   p-1   overflow-auto  ">
-                                 {selectedValues2.map((item, index) => (
-                                    <div key={index} className="relative w-[20%] md:w-[19%] h-12 ">
-                                       <div
-                                          className=" absolute z-20 right-0 top-1 h-[25%] w-[16%] items-center justify-center  ">
-                                          <img
-                                             src={deleyter.src}
-                                             alt="Image sélectionnée"
-                                             className="relative h-[100%] cursor-pointer mx-auto w-[100%] z-40"
-                                             onClick={() => removeValue(item)} // Appelle removeValue avec l'élément à supprimer
-
-                                          />
-                                       </div>
-                                       <div
-                                          className='relative w-full h-full  z-10 cursor-pointer  border border-gray-500 rounded-md hover:bg-gray-50'
-                                       >
-                                          <div className="relative w-full h-[70%]  flex items-center justify-center">
-                                             {item === '1' ? (
-                                               <span>LA DG</span>
-                                             ) : item === '2' ? (
-                                                <span>LA DT</span>
-                                             ) : item === '3' ? (
-                                                <span>LA DAP</span>
-                                             ): item === '4' ? (
-                                                   <span>LA DFC</span>
-                                                ) : (
-                                                <span>LA DC</span>
-                                             )}
-                                          </div>
-                                       </div>
-                                    </div>
-                                 ))}
-
-
-                              </div>
-
-
-                              <div
-                                 className="flex flex-wrap mx-auto  content-normal gap-1 relative h-[88%] w-[100%] rounded-md border border-gray-600   p-1 pb-14 -top-5  overflow-auto  ">
+                                 className="flex flex-wrap mx-auto  content-normal gap-1 relative h-[98%] w-[100%] rounded-md border border-gray-600   p-1 pb-14 top-2  overflow-auto  ">
                                  {filteredData2.map((item, index) => (
                                     <div key={index} className="relative w-[20%] md:w-[19%] h-36 ">
                                        <div
@@ -801,7 +684,7 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
                            </div>
 
                            <div
-                              className=" relative h-[94%] w-[30%] top-4 ">
+                              className=" relative h-[100%] w-[30%] -top-2 ">
 
 
                               <div
@@ -837,18 +720,15 @@ export default function CourrierDepart({structure,updateactuNotif,updateshowHead
 
                         </div>
 
-                        <div className="relative h-[6%] w-[100%]    mx-auto ">
+                        <div className="relative h-[6%] w-[100%] top-2   mx-auto ">
                            <h1
                               className={` ${statut === 8 ? 'text-blue-600 text-lg -mt-8 mx-3 w-full ' : 'text-red-600 text-sm -mt-1 mx-4'} underline underline-offset-8  font-medium`}>
                               {statut === 1 ? 'Aucune Information sur le courrier n`a ete remplis'
-                                 : statut === 2 ? 'Sélectionnez le destinataire du courrier'
+                                 : statut === 2 ? 'Saisissez l`éxpediteur de ce courrier'
                                     : statut === 3 ? 'Quel est le niveau d`urgence du courrier'
                                        : statut === 4 ? 'Aucun fichier n`a été mis dans le courrier'
                                           : statut === 5 ? 'Saisissez l`objet du courrier'
-                                             : statut === 6 ? 'Nous sommes dans le Service destinataire'
-                                                : statut === 7 ? 'Saisissez l`instruction correspondant à ce courrier'
-                                                   : statut === 8 ? 'Saisissez l`instruction correspondant à ce courrier'
-                                                      : statut === 10 ? 'Nombre de destinataire limite atteint'
+                                             : statut === 6 ? 'Saisissez l`instruction correspondant à ce courrier'
                                                       : ''}
                            </h1>
 

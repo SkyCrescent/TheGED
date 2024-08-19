@@ -8,12 +8,12 @@ $answer = array();
 
 //&Type_transmission="depart-arrive"
 
-if (isset($_GET['recepteur'] ,$_GET['Type_transmission'] )) {
+if (isset($_GET['recepteur'] ,$_GET['Type_transmission'],$_GET['service'] )) {
     $recepteur = $_GET['recepteur'];
   $Type_transmission = $_GET['Type_transmission'];
-
-    $query = $con->prepare("SELECT id,objet, expediteur,date,parafeux,Niveau,transmission_interne,note FROM courier WHERE recepteur = ? and Type_transmission = ? and transmission_interne = 'oui' ORDER BY 1 DESC");
-    $query->bind_param("ss", $recepteur ,$Type_transmission);
+    $sous_structure=$_GET['service'];
+    $query = $con->prepare("SELECT id,objet, expediteur,date,parafeux,Niveau,transmission_interne,note FROM courier WHERE recepteur = ? and Type_transmission = ? and transmission_interne = 'oui' and sous_structure = ? ORDER BY 1 DESC");
+    $query->bind_param("sss", $recepteur ,$Type_transmission,$sous_structure);
     if ($query->execute()) {
         $query->store_result(); // Stocke les résultats dans le client
         $numRows = $query->num_rows;

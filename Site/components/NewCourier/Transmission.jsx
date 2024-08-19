@@ -6,16 +6,19 @@ import pdf from "@/public/icons/pdf.png";
 import excel from "@/public/icons/excel2.png";
 import pptx from "@/public/icons/pptx.png";
 import close from "@/public/icons/multiply.png";
+import process from "process";
 
 export default function Transmission({updateactuNotif, RefreshTransmissionInterne,structure,updateRefreshTransmissionInterne,SetInterne,updateCourrier,id,valueInTransmission,handleClickButton8,updateValueNotification,updateValueNotifications}){
-   // handleClickButton8={handleClickButton8} updateValueNotification={updateValueNotification}  updateValueNotifications={updateValueNotifications}
+   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
    const [focus4 , SetFocus4] = useState(false)
    let formattedDate =""
    const [ statut , SetStatut ] = useState(0)
    const [nouveau , Setnouveau] = useState("")
    const [loading , SetLoading ] = useState(false)
+   const [filteredData2, setFilteredData2] = useState([]); // Initialize with all data
    const [values, setValues] = useState({
-      destinataire:"",
+      destinataire:"Chef de Service",
+      sous_service:"",
        transmis:"oui",
       expediteur:id,
       date:"",
@@ -38,10 +41,28 @@ export default function Transmission({updateactuNotif, RefreshTransmissionIntern
       // console.log(structure)
    },80)
 
+
+   const getData1 = async ()=>{
+      try {
+         const response = await axios.get(`${baseUrl}/Structure/get_byId.php?id_structure=${id}`);
+
+         if (response.data && response.data.recu && response.data.recu.length > 0) {
+            //setreponse('oui');
+            console.log(response.data.recu)
+            setFilteredData2(response.data.recu)
+         } else {
+            console.log("Il ya rien")
+            setFilteredData2([])
+         }
+      } catch (error) {
+         console.error("Une erreur s'est produite lors de la récupération des données de l'API : ", error);
+      }
+   }
+
    const getData2 = async () => {
       try {
          // Remplacez l'URL par la bonne URL de votre API
-         const response = await axios.get(`http://localhost:8000/Transmission/get_allTransmission.php`);
+         const response = await axios.get(`${baseUrl}/Transmission/get_allTransmission.php`);
          // console.log(response.data && response.data.recu && response.data.recu.length > 0)
          if (response.data && response.data.recu && response.data.recu.length > 0) {
             // Vérifiez que la réponse contient les données attendues
@@ -64,6 +85,7 @@ export default function Transmission({updateactuNotif, RefreshTransmissionIntern
 
    useEffect(()=>{
       getData2()
+      getData1()
       //console.log(filteredData)
       //console.log("le nouveau id",nouveau)
    },[])
@@ -103,8 +125,10 @@ export default function Transmission({updateactuNotif, RefreshTransmissionIntern
    },[])
 
    const handleSummit = async () => {
-      if (values.destinataire === "" )  {
+      if (values.sous_service === "" )  {
          SetStatut(1)
+      }else  if (values.sous_service .includes("Secrétariat")||values.sous_service .includes("Secrétaire") || values.sous_service .includes("Secretariat") ||values.sous_service .includes("Secretaire")  )  {
+         SetStatut(2)
       } else {
          try {
             const formData = new FormData();
@@ -114,12 +138,12 @@ export default function Transmission({updateactuNotif, RefreshTransmissionIntern
             formData.append('id_courier', values.id_courier);
             formData.append('transmis', values.transmis);
             // Effectuez la requête HTTP en utilisant Axios
-            const response = await axios.post('http://localhost:8000/Transmission/add_Transmission.php', formData, {
+            const response = await axios.post(`${baseUrl}/Transmission/add_Transmission.php`, formData, {
                headers: {
                   'Content-Type': 'multipart/form-data',
                },
             });
-               const response2 = await axios.get(`http://localhost:8000/Transmission/updateTransmisssion.php?id=${valueInTransmission}&transmission_interne=oui`)
+                  const response2 = await axios.get(`${baseUrl}/Transmission/updateTransmisssion.php?id=${valueInTransmission}&transmission_interne=oui&sous_structure=${values.sous_service}`)
             console.log("Resultat de la mise a jour 2 ",response2)
 
 
@@ -135,7 +159,7 @@ export default function Transmission({updateactuNotif, RefreshTransmissionIntern
 
             formData3.append('lue', values2.lue);
             // Effectuez la requête HTTP en utilisant Axios
-            const response3 = await axios.post('http://localhost:8000/notification/add_notification.php', formData3, {
+            const response3 = await axios.post(`${baseUrl}/notification/add_notification.php`, formData3, {
                headers: {
                   'Content-Type': 'multipart/form-data',
                },
@@ -166,7 +190,7 @@ export default function Transmission({updateactuNotif, RefreshTransmissionIntern
       const { name, value } = e.target ;
       setValues(prevValues => ({
          ...prevValues,
-         destinataire: value,
+         sous_service: value,
       }));
       console.log(values)
       // faire ca avec label
@@ -192,7 +216,8 @@ export default function Transmission({updateactuNotif, RefreshTransmissionIntern
 
                            <h1
                               className={` ${statut === 7 ? 'text-blue-600 text-lg -mt-8 mx-3 w-full ' : 'text-red-600 text-xs mt-24 mx-4'} underline underline-offset-8  font-medium`}>
-                              {statut === 1 ? 'Aucune Information sur la transmission n`a ete remplis'
+                              {statut === 1 ? 'Aucune Information sur la transmission n`a ete remplis':
+                                 statut === 2 ? 'Nous sommes deja au secrétariat'
                                  : ''}
                            </h1>
                         </div>
@@ -225,13 +250,21 @@ export default function Transmission({updateactuNotif, RefreshTransmissionIntern
                                  onChange={(e) => handleChange2(e)}
                               >
                                  <option value=""></option>
-                                 <option value='Chef de Service'>Chef de Service</option>
-                                 <option value='Particulie(re)'>Particulie(re)</option>
+                                 {/*<option value='Chef de Service'>Chef de Service</option>*/}
+                                 {/*<option value='Particulie(re)'>Particulie(re)</option>*/}
+                                 {filteredData2.map((option) => (
+                                    <option key={option.id} value={option.nom}>
+                                       {option.nom}
+                                    </option>
+                                 ))}
                               </select>
                               <span
                                  className={(focus4 || values.destinataire) ? "absolute left-3 p-1 w-auto top-4 px-1 text-xs font-black text-blue-900 -translate-y-9 duration-300" : "absolute tracking-wide pointer-events-none duration-300 left-0 top-3 px-5 text-sky-700"}>
                                   Destinataires du courrier
                                 </span>
+
+
+
                            </div>
                            <div className="relative w-[50%]">
                               <button

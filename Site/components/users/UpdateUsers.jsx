@@ -13,6 +13,8 @@ export default function updateUsers({setUpdate,idUpdate,handleClickButton8,updat
    const [phoneNumber, setPhoneNumber] = useState('');
    const [filteredData, setFilteredData] = useState([]); // Initialize with all data
    const [filteredData2, setFilteredData2] = useState([]); // Initialize with all data
+   const [filteredData3, setFilteredData3] = useState([]); // Initialize with all data
+
    const [isSubmit,SetIsSubmit] = useState(false)
    const [focus , SetFocus] = useState(false)
    const [selectedImage , SetselectedImage] = useState(false)
@@ -33,6 +35,22 @@ export default function updateUsers({setUpdate,idUpdate,handleClickButton8,updat
    const [ reponse , setreponse ] = useState("")
    const [ reponse2 , setreponse2 ] = useState("")
    const [values, setValues] = useState({
+      nom: "",
+      prenom : "",
+      adresse:"",
+      num:"",
+      situation:"",
+      structure:"",
+      poste:"",
+      service :"",
+      username:"",
+      password:"",
+      photo:""
+
+   });
+
+
+   const [values2, setValues2] = useState({
       nom: "",
       prenom : "",
       adresse:"",
@@ -118,6 +136,25 @@ export default function updateUsers({setUpdate,idUpdate,handleClickButton8,updat
             });
 
 
+            //let strucutre =  response.data.recu[0].service === 1 ?
+
+
+
+            const response2 = await axios.get(`${baseUrl}/Structure/get_byId.php?id_structure=${response.data.recu[0].id_structure}`);
+
+            if (response2.data && response2.data.recu && response2.data.recu.length > 0) {
+               //setreponse('oui');
+               console.log(response.data.recu)
+               setFilteredData3(response2.data.recu)
+
+            } else {
+               console.log("La réponse de l'API est incorrecte ou ne contient pas de données.",response);
+            }
+
+
+
+
+
          } else {
             console.log("La réponse de l'API est incorrecte ou ne contient pas de données.",response);
          }
@@ -125,8 +162,6 @@ export default function updateUsers({setUpdate,idUpdate,handleClickButton8,updat
          console.error("Une erreur s'est produite lors de la récupération des données de l'API : ", error);
       }
    }
-
-
 
    const handleFileChange2 = async (event) => {
       const fileInput = event.target;
@@ -267,8 +302,183 @@ export default function updateUsers({setUpdate,idUpdate,handleClickButton8,updat
 
 
    };
+   const handleSummit = async () => {
+      SetIsSubmit(true);
+      const estPresent = filteredData.some((item) => item.username === values.username);
+      const valuesNotEmpty = Object.values(values).every(value => value !== "");
+      //  if (!valuesNotEmpty){
+      //          setEtat(20)
+      //       }else
+
+      if (!values.nom){
+         console.log("boubouff")
+         setEtat(1)
+      } else if (!values.prenom) {
+         setEtat(2)
+      }else if (!values.adresse){
+         setEtat(3)
+      }else if (!values.num){
+         setEtat(4)
+      }else if (!values.situation){
+         setEtat(5)
+      }else if (!values.structure){
+         setEtat(6)
+      }else if (!values.poste) {
+         setEtat(7)
+      } else if (!values.service){
+         setEtat(7.5)
+      } else if (!values.username){
+         setEtat(8)
+      }else if (estPresent){
+         setEtat(9)
+      } else if (!values.password){
+         setEtat(10)
+      }else if (!values.photo){
+         setEtat(11)
+      }else if (reponse === 'oui'){
+         //console.log("boubou")
+         setEtat(12)
+      }else {
+
+         try {
+            // Vérifiez que tous les champs requis sont remplis
+
+            const formData = new FormData();
+            formData.append('nom', values.nom);
+            formData.append('prenom', values.prenom);
+            formData.append('adresse', values.adresse);
+            formData.append('num_phone', values.num);
+            formData.append('situation', values.situation);
+            formData.append('id_structure', values.structure);
+            formData.append('service', values.service);
+            formData.append('poste_agent', values.poste);
+            formData.append('username', values.username);
+            formData.append('password', values.password);
+            formData.append('photo', values.photo);
+
+            // Effectuez la requête HTTP en utilisant Axios
+            const response = await axios.post(`${baseUrl}/agent/add_agent.php`, formData, {
+               headers: {
+                  'Content-Type': 'multipart/form-data',
+               },
+            });
+            console.log("Truc ajouté avec succès ", response);
+
+            setValues({
+               nom: "",
+               prenom : "",
+               adresse:"",
+               num:"",
+               situation:"",
+               structure:"",
+               poste:"",
+               service :"",
+               username:"",
+               password:"",
+               photo:""
+            });
 
 
+            const newValue = 'ajout2'
+            updateValueNotifications(newValue)
+
+            handleClickButton8();
+
+            SetDoc2(false)
+            // Si la requête réussit, naviguer vers la nouvelle page
+            //  router2.replace('../../register/welcome/welcome2');
+
+         } catch (error) {
+            console.error(error);
+         }
+
+
+      }
+   }
+
+   // pour la structure
+   const handleChange = async (e) => {
+      const {name, value} = e.target;
+      if (e.target.value && values.poste !== "Directeur Général") {
+         setValues({...values, [name]: value})
+         setreponse('non');
+         console.log(values)
+         console.log("le poste nest pas la ou different de directeur")
+
+
+
+
+
+
+
+         try {
+            const response = await axios.get(`${baseUrl}/Structure/get_byId.php?id_structure=${e.target.value}`);
+
+            if (response.data && response.data.recu && response.data.recu.length > 0) {
+               //setreponse('oui');
+               console.log(response.data.recu)
+               setFilteredData2(response.data.recu)
+            } else {
+               console.log("Il ya rien")
+               setFilteredData2([])
+            }
+         } catch (error) {
+            console.error("Une erreur s'est produite lors de la récupération des données de l'API : ", error);
+         }
+
+
+
+
+      } else{
+         console.log(values.poste)
+         // verifie si le poste est libre
+         try {
+
+            const response2 = await axios.get(`${baseUrl}/Structure/get_byId.php?id_structure=${e.target.value}`);
+
+            if (response2.data && response2.data.recu && response2.data.recu.length > 0) {
+               //setreponse('oui');
+               console.log(response2.data.recu)
+               setFilteredData2(response2.data.recu)
+            } else {
+               console.log("Il ya rien")
+               setFilteredData2([])
+            }
+
+
+
+
+
+            const response = await axios.get(`${baseUrl}/verification/verification.php?id_structure=${e.target.value}&poste_agent=Directeur Général`);
+
+            if (response.data && response.data.recu && response.data.recu.length > 0) {
+               setreponse('oui');
+               console.log(response.data.recu)
+            } else {
+               setValues({...values, [name]: value})
+               setreponse('non');
+               console.log("Pas de correspandonce")
+            }
+         } catch (error) {
+            console.error("Une erreur s'est produite lors de la récupération des données de l'API : ", error);
+         }
+
+
+         //
+         // setValues({...values, [name]: value})
+         // console.log(values)
+         // console.log("poste nest pas la")
+      }
+      // pour les select
+   };
+
+
+   const handleChange4 = (e) => {
+      const { name, value } = e.target ;
+      setValues({...values, [name] : value})
+      console.log(values)
+      // pour les select
+   };
 
    useEffect(() => {
       getData()
@@ -385,38 +595,54 @@ export default function updateUsers({setUpdate,idUpdate,handleClickButton8,updat
                                  className=" relative h-[400%] w-[38%] decoration shadow-black  mt-2  p-1 rounded-lg ">
                                  <div className="relative w-[98%] h-[100%]  mx-auto items-center   ">
 
-                                    <label
-                                       htmlFor="imageInput2"
-                                       className="relative w-[100%] md:w-[90%] lg:w-[100%] h-[100%] md:h-[99%] lg:h-[110%] mt-0  mx-auto bg-transparent border border-black rounded-full flex items-center justify-center cursor-pointer group"
+                                    <img
+                                       // src={URL.createObjectURL(selectedFile)}
+                                       src={`/${values.photo}`}
+                                       alt="Image sélectionnée"
+                                       className="relative h-[100%]  border border-black rounded-full  w-[100%]   z-40"
+                                    />
 
-                                    >
+                                    {/*a toucher pour pouvoir modifier les photos*/}
+                                    {/*<label*/}
+                                    {/*   htmlFor="imageInput2"*/}
+                                    {/*   className="relative w-[100%] md:w-[90%] lg:w-[100%] h-[100%] md:h-[99%] lg:h-[110%] mt-0  mx-auto bg-transparent border border-black rounded-full flex items-center justify-center cursor-pointer group"*/}
 
-                                       <input
-                                          type="file"
-                                          id="imageInput2"
-                                          name="file"
-                                          accept=".jpg, .jpeg, .png"
-                                          className="sr-only  bg-black "
-                                          onChange={handleFileChange2}
-                                       />
-                                       <div
-                                          className={selectedFile ? "hidden" : "relative h-[100%] w-[100%]  inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"}>
-                                          <Image
-                                             src={picture.src}
-                                             alt={`Logo `}
-                                             width="600"
-                                             height="600"
-                                             className="object-contain object-center  w-12 h-12 text-gray-600  "
-                                          />
-                                       </div>
-                                       {selectedFile && (
-                                          <img
-                                             src={URL.createObjectURL(selectedFile)}
-                                             alt="Image sélectionnée"
-                                             className="relative h-[100%]  rounded-full  w-[100%]   z-40"
-                                          />
-                                       )}
-                                    </label>
+                                    {/*>*/}
+
+                                    {/*   <input*/}
+                                    {/*      type="file"*/}
+                                    {/*      id="imageInput2"*/}
+                                    {/*      name="file"*/}
+                                    {/*      accept=".jpg, .jpeg, .png"*/}
+                                    {/*      className="sr-only  bg-black cursor-not-allowed "*/}
+                                    {/*      // onChange={handleFileChange2}*/}
+                                    {/*   />*/}
+                                    {/*   /!*<div*!/*/}
+                                    {/*   /!*   className={selectedFile ? "hidden" : "relative h-[100%] w-[100%]  inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"}>*!/*/}
+                                    {/*   /!*   <Image*!/*/}
+                                    {/*   /!*      src={picture.src}*!/*/}
+                                    {/*   /!*      alt={`Logo `}*!/*/}
+                                    {/*   /!*      width="600"*!/*/}
+                                    {/*   /!*      height="600"*!/*/}
+                                    {/*   /!*      className="object-contain object-center  w-12 h-12 text-gray-600  "*!/*/}
+                                    {/*   /!*   />*!/*/}
+                                    {/*   /!*   <img*!/*/}
+                                    {/*   /!*      // src={URL.createObjectURL(selectedFile)}*!/*/}
+                                    {/*   /!*      src={`/${values.photo}`}*!/*/}
+                                    {/*   /!*      alt="Image sélectionnée"*!/*/}
+                                    {/*   /!*      className="relative h-[100%]  rounded-full  w-[100%]   z-40"*!/*/}
+                                    {/*   /!*   />*!/*/}
+                                    {/*   /!*</div>*!/*/}
+
+                                    {/*   {selectedFile && (*/}
+                                    {/*      <img*/}
+                                    {/*         // src={URL.createObjectURL(selectedFile)}*/}
+                                    {/*         src={`/${values.photo}`}*/}
+                                    {/*         alt="Image sélectionnée"*/}
+                                    {/*         className="relative h-[100%] cursor-not-allowed rounded-full  w-[100%]   z-40"*/}
+                                    {/*      />*/}
+                                    {/*   )}*/}
+                                    {/*</label>*/}
 
                                  </div>
 
@@ -568,22 +794,16 @@ export default function updateUsers({setUpdate,idUpdate,handleClickButton8,updat
                                     // value={values.service}
                                     //
                                  >
+                                    <option value=''> {values.service} </option>
+
+
+
                                     <option value=''></option>
-                                    <option value='Marié(e)'>Marié(e)</option>
-
-                                    {/*{*/}
-
-                                    {/*   values.service ? values.service :*/}
-
-
-                                    {/*      filteredData2.map((option) => (*/}
-                                    {/*      <option key={option.id} value={option.nom}>*/}
-                                    {/*         {option.nom}*/}
-                                    {/*      </option>*/}
-                                    {/*   ))*/}
-
-
-                                    {/*   }*/}
+                                    {filteredData3.map((option) => (
+                                       <option key={option.id} value={option.nom}>
+                                          {option.nom}
+                                       </option>
+                                    ))}
 
                                  </select>
                                  <span

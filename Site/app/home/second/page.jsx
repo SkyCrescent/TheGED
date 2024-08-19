@@ -16,6 +16,7 @@ import AddDoc from "@/components/AddDoc";
 import AddDoc2 from '@/components/AddDoc2'
 import CourrierDepart from '@/components/NewCourier/CourrierDepart'
 import CourrierArrive from "@/components/NewCourier/CourrierArrive";
+import NewCourrierArrive from "@/components/NewCourier/NewCourrierArrive";
 import Transmission from "@/components/NewCourier/Transmission";
 import Transfert from "@/components/Transfert";
 import Transfert3 from "@/components/Transfert3";
@@ -64,6 +65,7 @@ export default function page() {
    const [ TheId , Setid] = useState(0 )
    const [poste , SetPoste] = useState("" )
    const [structure , SetStructure] = useState("" )
+   const [ service ,SetService ] = useState("")
    const [ comegreen , SetComegreen ] = useState(false)  // Le centre define enorme et vert
    const [ ShowNotifications , SetNotifications] = useState(false)    // constante pour afficher et cacher les notifications
 
@@ -103,6 +105,7 @@ export default function page() {
    //constante d'ouverture de formulaire
    const [addDoc , SetDoc] = useState(false ) //nouveau fichier perso
    const [addDoc2 , SetDoc2] = useState(false ) // nouveau fichier des secretaires et autres structure
+   const [ EnterCourrier ,SetEnterCourrier] = useState(false) // nouveau courrier entrant
    const [ SendCourier ,SetSendCourier ] = useState(false) // nouveau courier depart
    const [ SendParafeux ,SetSendParafeux ] = useState(false) // Envoyer ver le parafeux
    const [ SendInterne ,SetInterne ] = useState(false) // Transmission Intenne
@@ -215,6 +218,13 @@ export default function page() {
    const handleClickButton13 = () => {
       setShowHistoric(true)
    };
+
+   const handleClickButton14 = () => {
+      SetEnterCourrier(true)
+   };
+
+
+
    const getData = async () => {
       try {
          const response = await axios.get(`${baseUrl}/agent/get_byId.php?id=${decodedData}`);
@@ -227,6 +237,7 @@ export default function page() {
             SetPhoto(response.data.recu[0].photo)
             SetPoste(response.data.recu[0].poste_agent)
             SetStructure(response.data.recu[0].id_structure)
+            SetService(response.data.recu[0].service)
 
          } else {
             console.log("La réponse de l'API est incorrecte ou ne contient pas de données.",response);
@@ -682,7 +693,10 @@ export default function page() {
                                              structure={structure} id={decodedData} reduce={reduce} click={click}
                                              handleClickButton1={handleClickButton1}/>
                                     : click === 7 ? <Admi />
-                                       : click === 9 ? <NOTREGED updateactuNotif={updateactuNotif} structure={structure}
+                                       : click === 9 ? <NOTREGED
+                                             handleClickButton14 = {handleClickButton14}
+                                             service={service}
+                                             updateactuNotif={updateactuNotif} structure={structure}
                                                                  RefreshTransmissionInterne={RefreshTransmissionInterne}
                                                                  updateRefreshTransmissionInterne={updateRefreshTransmissionInterne}
                                                                  valueInTransmission={valueInTransmission}
@@ -698,6 +712,17 @@ export default function page() {
 
 
          </div>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -764,7 +789,10 @@ export default function page() {
             ShowBackEndNotification ? ( <BackEndNotifications poste={poste} updateValueAtransmettre={updateValueAtransmettre} valueAtransmettre={valueAtransmettre}  updateshowHeader={updateshowHeader} SetBackEndNotification={SetBackEndNotification} structure={structure} />) : null
          }
 
+         {
+            EnterCourrier ? ( <NewCourrierArrive updateshowHeader={updateshowHeader}  handleClickButton8={handleClickButton8} id={structure}  updateValueNotification={updateValueNotification} SetEnterCourrier={SetEnterCourrier} />) : null
 
+         }
 
 
 

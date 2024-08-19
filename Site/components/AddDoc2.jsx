@@ -527,7 +527,7 @@ export default function AddDoc({nomAgent,updateValueNotification,valueNotificati
 
 
                      <div
-                        className="flex justify-between bottom-1 z-10 space-x-6 relative w-[80%] h-[15%] ">
+                        className="flex justify-between mx- bottom-1 z-10 space-x-6 relative w-[80%] h-[15%] ">
                         <button
                            className={`bg-indigo-600 text-white rounded-3xl w-32 h-10 font-bold top-0 mx-auto text-sm cursor-pointer transform hover:scale-x-110 hover:scale-y-110 hover:bg-indigo-800 transition duration-300  `}
                            onClick={handleSummit}>Confirmer

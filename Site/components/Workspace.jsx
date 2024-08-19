@@ -24,6 +24,7 @@ import Notifications from "@/components/Notifications/BackEndNotifications";
 // Importez process.env pour accéder aux variables d'environnement
 import process from 'process';
 import io from "socket.io-client";
+import refresh from "@/public/icons/refresh_127px.png";
 
 // Utilisez la variable d'environnement pour construire l'URL de base
 export default function Workspace({updateValueUpdateArchive,nomAgent,updateValueDelete,handleClickButton10,updateValueNotification,handleClickButton8, updateIdFiles,handleClickButton9,updateValueNotifications,valueNotifications,id_agent,id,handleClickButton1,handleClickButton2  , structure,reduce}) {
@@ -74,6 +75,10 @@ export default function Workspace({updateValueUpdateArchive,nomAgent,updateValue
 
       return formattedDate2;
    }
+
+
+
+   // Fonction de document pour un service
    const getData3 = async () => {
       try {
          // Recuperes les types de structure
@@ -112,6 +117,8 @@ export default function Workspace({updateValueUpdateArchive,nomAgent,updateValue
    };
 
 
+
+   // Fonction de document pour un agent en particulier ou un directeur
    const getData2 = async () => {
       try {
          // Recuperes les types de structure
@@ -207,9 +214,13 @@ export default function Workspace({updateValueUpdateArchive,nomAgent,updateValue
 
          if (response.data && response.data.recu && response.data.recu.length > 0) {
             // Vérifiez que la réponse contient les données attendues
+            setFilteredData3([])
+            getData3()
             console.log("ici", response.data.recu)
 
          } else {
+            setFilteredData3([])
+            getData3()
             console.log("La réponse de l'API est incorrecte ou ne contient pas de données.", response);
             const newValue =  'compresse'
 
@@ -242,9 +253,6 @@ export default function Workspace({updateValueUpdateArchive,nomAgent,updateValue
             // Vérifiez que la réponse contient les données attendues
 
 
-
-
-
             const contenu = extension === "Word" ? 'archiver un document Word'
                : extension ==='Excel' ? 'archiver un document Excel'
                   : extension === 'PDF' ? 'archiver un document PDF'
@@ -275,6 +283,9 @@ export default function Workspace({updateValueUpdateArchive,nomAgent,updateValue
 
             console.log("ici", response.data.recu)
             console.log("Truc ajouté avec succès ", response2);
+
+            getData2()
+
          } else {
             console.log("La réponse de l'API est incorrecte ou ne contient pas de données.", response);
             const newValue =  'compresse'
@@ -711,7 +722,23 @@ export default function Workspace({updateValueUpdateArchive,nomAgent,updateValue
 
 
                   <button
-                     className="w-[90%] bg-blue-600 flex items-center  justify-center gap-3 mx-6 mt-1 hover:bg-blue-900 text-white transition duration-300 transform hover:scale-105  rounded-md text-xs font-semibold p-1"
+                     className="w-[50%] bg-white border border-blue-500 flex items-center  justify-evenly gap-3 mx-2 mt-1 text-white transition duration-300 transform hover:scale-105  rounded-md text-xs font-semibold p-1.5"
+                     onClick={pathname.includes('director') ? getData2 : getData3}
+
+                  >
+                     <img
+                        className=" h-auto  "
+                        src={refresh.src}
+                        height={25}
+                        width={25}
+                        alt="Nfc"
+
+                     />
+                  </button>
+
+
+                  <button
+                     className="w-[50%] bg-blue-600 flex items-center  justify-center gap-3 mx-2 mt-1 hover:bg-blue-900 text-white transition duration-300 transform hover:scale-105  rounded-md text-xs font-semibold p-1.5"
                      onClick={pathname.includes('director') ? handleClickButton1 : handleClickButton2}
                      title="Ajouter un Nouveau fichier" // Ajout de l'info-bulle ici
                   >
@@ -723,8 +750,6 @@ export default function Workspace({updateValueUpdateArchive,nomAgent,updateValue
                         alt="Nfc"
                      />
                   </button>
-
-
 
 
                </div>

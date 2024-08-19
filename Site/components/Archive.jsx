@@ -19,7 +19,7 @@ import io from "socket.io-client";
 
 export  default function Archive({data,setValueUpdateArchive,structure, id ,reduce,click,id_agent, handleClickButton1,updateValueNotification,handleClickButton8}){
    // Utilisez la variable d'environnement pour construire l'URL de base
-   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
    const [loading , SetLoading] = useState(false )
    const [filteredData, setFilteredData] = useState([]); // Initialize with all data
    const [loading2 , SetLoading2] = useState(false )

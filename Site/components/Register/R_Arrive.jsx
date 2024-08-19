@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 
 import search from "@/public/icons/search_126px.png";
 import deleted from "@/public/icons/delete_127px.png";
-import dowload from "@/public/icons/download.png";
+import dowload from "@/public/icons/add_127px2.png";
 import back from "@/public/icons/back_127px.png";
 import mail from "@/public/icons/mail.png"
 import axios from "axios";
@@ -18,7 +18,7 @@ import note2 from "@/public/icons/note_127px.png";
 import process from "process";
 import io from "socket.io-client";
 
-export default function R_Arrive({ updateactuNotif,structure,RefreshTransmissionInterne,updateRefreshTransmissionInterne,valueInTransmission, updateValueNotification ,valueCourrier,updateCourrier,updateValueNotifications,updateValueInTransmission,Myid,handleClickButton1,handleClickButton8,handleClickButton6}){
+export default function R_Arrive({ handleClickButton14,updateactuNotif,structure,RefreshTransmissionInterne,updateRefreshTransmissionInterne,valueInTransmission, updateValueNotification ,valueCourrier,updateCourrier,updateValueNotifications,updateValueInTransmission,Myid,handleClickButton1,handleClickButton8,handleClickButton6}){
    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
    const [filteredData, setFilteredData] = useState([]); // Initialize with all data
    const [filteredData2, setFilteredData2] = useState([]); // Initialize with all data
@@ -383,7 +383,7 @@ export default function R_Arrive({ updateactuNotif,structure,RefreshTransmission
    return (
          <div className="relative w-[100%]  h-[100%] ">
             <div className="relative w-[100%]  h-[12%]  flex  items-center justify-center ">
-               <div className="relative h-[70%]  w-[40%] ">
+               <div className="relative h-[70%]  w-[38%] ">
 
                   <div className="relative flex justify-between items-center justify-center w-[80%]  mx-2 border rounded-lg border-gray-300 ">
                      <input
@@ -420,7 +420,7 @@ export default function R_Arrive({ updateactuNotif,structure,RefreshTransmission
 
                </div>
 
-               <div className="relative h-[70%]  w-[40%]  ">
+               <div className="relative h-[70%]  w-[35%]  ">
                   <div className="relative w-[100%] ">
                      <select
                         onFocus={() => SetFocus6(true)}
@@ -445,20 +445,15 @@ export default function R_Arrive({ updateactuNotif,structure,RefreshTransmission
                   </div>
                </div>
 
-               <div className="relative h-[70%]  w-[20%]  flex items-center justify-center ">
+               <div className="relative h-[70%]  w-[25%]  flex items-center justify-center ">
 
                   <button
                      className="w-[30%] bg-black/90 flex items-center  justify-evenly gap-3 mx-auto hover:bg-black/100 text-white transition duration-300 transform hover:scale-105  rounded-md text-xs font-semibold p-1.5"
-
-                     // onClick={setFilteredData2([]),handleClickButton1}
-
-
                      onClick={() => {
                         SetSeePhrase(false);
                         setFilteredData2([]);
                         handleClickButton1()
                      }}
-
                   >
                      <img
                         className=" h-auto  "
@@ -474,10 +469,6 @@ export default function R_Arrive({ updateactuNotif,structure,RefreshTransmission
                   <button
                      className="w-[30%] bg-white border border-blue-500 flex items-center  justify-evenly gap-3 mx-auto text-white transition duration-300 transform hover:scale-105  rounded-md text-xs font-semibold p-1.5"
                      onClick={() => {
-                        // SetSeePhrase(false);
-                        // setFilteredData2([]);
-                        // handleClickButton1()
-
                         setFilteredData([])
                         getData()
 
@@ -492,6 +483,22 @@ export default function R_Arrive({ updateactuNotif,structure,RefreshTransmission
                         alt="Nfc"
 
                      />
+                  </button>
+
+
+                  <button
+                     className="w-[30%] bg-blue-600 flex items-center  justify-center gap-3  hover:bg-blue-900 text-white transition duration-300 transform hover:scale-105  rounded-md text-xs font-semibold p-1.5"
+                     onClick={handleClickButton14}
+                  >
+                     <img
+                        className=" h-auto  "
+                        src={dowload.src}
+                        height={25}
+                        width={25}
+                        alt="Nfc"
+
+                     />
+                     {/*Nouveau Courrier*/}
                   </button>
 
 
@@ -550,7 +557,9 @@ export default function R_Arrive({ updateactuNotif,structure,RefreshTransmission
                                                          : subItem.expediteur === "2" ? "La Direction Technique"
                                                             : subItem.expediteur === "3" ? "La Direction Administrative et du Personnel"
                                                                : subItem.expediteur === "4" ? "La Direction Financière et Comptable"
-                                                                  : "La Direction Commerciale"}</span> avec
+                                                                  : subItem.expediteur === "5" ? "La Direction Commerciale"
+                                                                     : subItem.expediteur
+                                                                       }</span> avec
                                                 un niveau
                                                 d'urgence <span
                                                          className="text-sky-800"> {subItem.Niveau}</span>

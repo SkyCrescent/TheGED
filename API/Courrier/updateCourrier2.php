@@ -17,8 +17,8 @@ $answer = array();
                   ){
         $id = $_GET['id'];
         $transmission_interne = $_GET['transmission_interne'] ;
-
-            $query = $con ->prepare("UPDATE courier SET transmission_interne = '$transmission_interne'
+        $sous_service ='Secrétariat';
+            $query = $con ->prepare("UPDATE courier SET transmission_interne = '$transmission_interne' , sous_structure = '$sous_service'
              WHERE id = '$id'");
 
                     if ($query->execute()){

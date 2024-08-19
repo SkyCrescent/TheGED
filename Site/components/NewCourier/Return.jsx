@@ -3,7 +3,9 @@ import axios from "axios";
 import React, {useEffect, useState} from "react";
 import close from "@/public/icons/multiply.png";
 import {usePathname} from "next/navigation";
+import process from "process";
 export default function Return({UpdateYourValueTransmission,TheUpdateValueParafeure ,setReturn,handleClickButton8,updateValueNotification,updateactuNotif,ValueInArrive,poste ,structure, SetResponse }){
+   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
    const [loading , SetLoading ] = useState(false)
    const [focus6 , SetFocus6] = useState(false)
    const [ border , Setborder ] = useState(false)
@@ -59,7 +61,7 @@ export default function Return({UpdateYourValueTransmission,TheUpdateValueParafe
 
 
    useEffect(() => {
-      console.log(values);
+      console.log("ee",values);
    }, [()=>{
       handleChange()
 
@@ -94,7 +96,7 @@ export default function Return({UpdateYourValueTransmission,TheUpdateValueParafe
             formData.append('idStructure', values.idStructure);
             formData.append('poste', values.poste);
 
-            const response = await axios.post('http://localhost:8000/Note/add_Note.php', formData, {
+            const response = await axios.post(`${baseUrl}/Note/add_Note.php`, formData, {
                headers: {
                   'Content-Type': 'multipart/form-data',
                },
@@ -112,7 +114,7 @@ export default function Return({UpdateYourValueTransmission,TheUpdateValueParafe
 
             formData3.append('lue', values2.lue);
             // Effectuez la requête HTTP en utilisant Axios
-            const response3 = await axios.post('http://localhost:8000/notification/add_notification.php', formData3, {
+            const response3 = await axios.post(`${baseUrl}/notification/add_notification.php`, formData3, {
                headers: {
                   'Content-Type': 'multipart/form-data',
                },
@@ -121,8 +123,8 @@ export default function Return({UpdateYourValueTransmission,TheUpdateValueParafe
 
 
             const response2 = pathname.includes('director')
-                     ?  await axios.get(`http://localhost:8000/Courrier/updateCourrier.php?id=${ValueInArrive}&parafeux=deja`)
-                        :  await axios.get(`http://localhost:8000/Courrier/updateCourrier2.php?id=${ValueInArrive}&transmission_interne=deja`)
+                     ?  await axios.get(`${baseUrl}/Courrier/updateCourrier.php?id=${ValueInArrive}&parafeux=deja`)
+                        :  await axios.get(`${baseUrl}/Courrier/updateCourrier2.php?id=${ValueInArrive}&transmission_interne=deja`)
 
 
             setValues(
@@ -170,7 +172,7 @@ export default function Return({UpdateYourValueTransmission,TheUpdateValueParafe
 
       } else {
          Setborder(true)
-         console.log("Veuillez remplir tous les champs avant de soumettre le formulaire.");
+         //console.log("Veuillez remplir tous les champs avant de soumettre le formulaire.");
          // Ajoutez ici la logique pour afficher un message d'erreur ou une notification à l'utilisateur.
       }
    };

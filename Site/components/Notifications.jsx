@@ -112,7 +112,7 @@ export default function Notifications({SetNotifications,valueNotification}){
                               className="relative h-[55%]  w-[65%] mx-auto  z-40"
                                  />)
 
-                                    : valueNotification === "SendCourrier"  || valueNotification=== "Parafeux" || valueNotification === "Renvoi" || valueNotification === "RenvoiCourrier" ? (
+                                    : valueNotification === "SendCourrier"  || valueNotification=== "Parafeux" || valueNotification === "Renvoi" || valueNotification === "RenvoiCourrier" || valueNotification === "NewCourrier" ? (
                                           <img src={msg.src}
                                                alt="Image sélectionnée"
                                                className="relative h-[55%]  w-[65%] mx-auto  z-40"
@@ -162,7 +162,8 @@ export default function Notifications({SetNotifications,valueNotification}){
                                                                                 'Le Compte selectioné a été débloquer'
                                                                                       :valueNotification === 'delete2' ?
                                                                                          'Le Compte selectioné a été supprimer'
-
+                                                                                             :valueNotification === 'NewCourrier' ?
+                                                                                                'Le courrier à éte enregistrée avec succès'
                                                         : `Un document ${valueNotification === "Word" ? "Word" : valueNotification === "Excel" ? "Excel" : valueNotification === "PDF" ? "PDF" : "PowerPoint"} a été ajouté avec succès`
 
                           }

@@ -64,6 +64,7 @@ export default function page() {
    const [ photo , SetPhoto] = useState("" )
    const [ TheId , Setid] = useState(0 )
    const [poste , SetPoste] = useState("" )
+   const [ service ,SetService ] = useState("")
    const [structure , SetStructure] = useState("" )
    const [ comegreen , SetComegreen ] = useState(false)  // Le centre define enorme et vert
    const [ ShowNotifications , SetNotifications] = useState(false)    // constante pour afficher et cacher les notifications
@@ -252,6 +253,7 @@ export default function page() {
             SetPhoto(response.data.recu[0].photo)
             SetPoste(response.data.recu[0].poste_agent)
             SetStructure(response.data.recu[0].id_structure)
+            SetService(response.data.recu[0].service)
 
          } else {
             console.log("La réponse de l'API est incorrecte ou ne contient pas de données.",response);
@@ -688,7 +690,9 @@ export default function page() {
                                              structure={structure} id={decodedData} reduce={reduce} click={click}
                                              handleClickButton1={handleClickButton1}/>
                                     : click === 7 ? <Admi reduce={reduce} TheId2={TheId} structure={structure}/>
-                                       : click === 9 ? <NOTREGED UpdateValueParafeure={UpdateValueParafeure}
+                                       : click === 9 ? <NOTREGED
+                                             service={service}
+                                             UpdateValueParafeure={UpdateValueParafeure}
                                                                  TheUpdateValueParafeure={TheUpdateValueParafeure}
                                                                  handleClickButton12={handleClickButton12}
                                                                  structure={structure}
